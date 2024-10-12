@@ -20,6 +20,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const contactButton = document.getElementById("add-contact");
   const contactInfo = document.getElementById("contact-info");
 
+  if (navigator.contacts.length === 0) {
+    contactInfo.innerHTML = "<p>Nenhum contato selecionado.</p>";
+  }
+
   // MUDAR TEMA
   const themeToggle = document.getElementById("theme-toggle");
   const htmlElement = document.documentElement;
@@ -133,9 +137,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // *********** ************** FUNCAO CONTATOS *********** **************
-  if (!navigator.contacts.length) {
-    contactInfo.innerHTML = "<p>Nenhum contato selecionado.</p>";
-  }
 
   function displayContacts(contacts) {
     if (contacts.length > 0) {

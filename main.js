@@ -25,18 +25,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
   geoButton.addEventListener("click", () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          geoLocation.textContent = `Localização: Latitude ${position.coords.latitude}, Longitude ${position.coords.longitude}`;
-        },
-        (error) => {
+      navigator.geolocation.getCurrentPosition((position) => {
+          const { latitude, longitude, altitude } = position.coords;
+
+          let locationText = `Localização: Latitude ${latitude}, Longitude ${longitude}`;
+          
+          if (altitude !== null) {
+              const altitudeStatus = altitude > 0 ? "acima do nível do mar" : "abaixo do nível do mar";
+              locationText += `, Altitude ${altitude.toFixed(2)} metros (${altitudeStatus})`;
+          } else {
+              locationText += `, Altitude: Não disponível`;
+          }
+
+          geoLocation.textContent = locationText;
+      }, (error) => {
           geoLocation.textContent = `Erro ao obter localização: ${error.message}`;
-        }
-      );
-    } else {
+      });
+  } else {
       geoLocation.textContent = "Geolocalização não é suportada.";
-    }
-  });
+  }
+});
+});
 
   speedButton.addEventListener("click", () => {
     if (navigator.geolocation) {

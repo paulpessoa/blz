@@ -49,14 +49,14 @@ document.addEventListener("DOMContentLoaded", () => {
         (position) => {
           const { latitude, longitude, altitude } = position.coords;
 
-          let locationText = `<p>Localização: ${latitude}, ${longitude}</p>`;
+          let locationText = `Localização: ${latitude}, ${longitude}`;
 
           if (altitude !== null) {
             const altitudeStatus =
               altitude > 0 ? "acima do nível do mar" : "abaixo do nível do mar";
-            locationText += `<p> Altitude ${altitude.toFixed(
+            locationText += `Altitude ${altitude.toFixed(
               2
-            )} metros (${altitudeStatus})</p>`;
+            )} metros (${altitudeStatus})`;
           } else {
             locationText += `, Altitude: Não disponível`;
           }

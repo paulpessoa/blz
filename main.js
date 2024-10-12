@@ -1,16 +1,15 @@
-window.onload = () => {
-  const consent = localStorage.getItem("cookieConsent");
-  if (!consent) {
-    document.getElementById("cookieConsentContainer").style.display = "block";
-  }
-
-  document.getElementById("acceptCookieConsent").onclick = () => {
-    localStorage.setItem("cookieConsent", "accepted");
-    document.getElementById("cookieConsentContainer").style.display = "none";
-  };
-};
-
 document.addEventListener("DOMContentLoaded", () => {
+  window.onload = () => {
+    const consent = localStorage.getItem("cookieConsent");
+    if (!consent) {
+      document.getElementById("cookieConsentContainer").style.display = "block";
+    }
+
+    document.getElementById("acceptCookieConsent").onclick = () => {
+      localStorage.setItem("cookieConsent", "accepted");
+      document.getElementById("cookieConsentContainer").style.display = "none";
+    };
+  };
   if (Notification.permission !== "granted") {
     Notification.requestPermission();
   }
@@ -139,6 +138,19 @@ document.addEventListener("DOMContentLoaded", () => {
       new Notification(title, { body });
     }
   }
+
+  function setCookieIfConsented(name, value, days) {
+    const consent = localStorage.getItem("cookieConsent");
+    if (consent === "accepted") {
+      const d = new Date();
+      d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000);
+      let expires = "expires=" + d.toUTCString();
+      document.cookie = name + "=" + value + ";" + expires + ";path=/";
+    } else {
+      console.log("Cookie consent not given");
+    }
+  }
+
   function saveContactsToCookie(contacts) {
     const contactsToSave = contacts.map((contact) => ({
       name: contact.name ? contact.name[0] : "",
@@ -169,6 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   contactButton.addEventListener("click", () => {
+    setCookieIfConsented("contactButtonClicked", "true", 1);
     if ("contacts" in navigator && "ContactsManager" in window) {
       const props = ["name", "tel"];
       const opts = { multiple: true };

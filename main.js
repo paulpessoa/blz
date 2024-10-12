@@ -121,37 +121,44 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       if ("contacts" in navigator && "ContactsManager" in window) {
         const props = ["name", "tel"]; // Propriedades desejadas
+        const opts = { multiple: false }; // Seleciona um contato
 
-        // Opções para seleção
-        const opts = { multiple: false };
-
-        // Tentativa de seleção de contatos
         const contacts = await navigator.contacts.select(props, opts);
 
         if (contacts.length > 0) {
-          const contact = contacts[0];
-          contactInfo.innerHTML = `
-                      <p><strong>Nome:</strong> ${contact.name}</p>
-                      <p><strong>Telefone:</strong> ${contact.tel}</p>
-                  `;
+          const newContact = contacts[0];
+
+          // Carregar contatos existentes
+          const savedContacts =
+            JSON.parse(localStorage.getItem("contacts")) || [];
+          savedContacts.push(newContact);
+
+          // Salvar no localStorage
+          localStorage.setItem("contacts", JSON.stringify(savedContacts));
+
+          // Atualizar a lista de contatos exibida
+          loadContacts();
         } else {
-          contactInfo.innerHTML = "<p>Nenhum contato selecionado.</p>";
+          alert("Nenhum contato foi selecionado.");
         }
       } else {
         alert("A API de contatos não é suportada neste navegador.");
       }
     } catch (error) {
       console.error("Erro ao acessar contatos: ", error);
-      // Mensagem de erro para o usuário
-      contactInfo.innerHTML =
-        "<p>Não foi possível acessar os contatos. Permissões necessárias ou suporte indisponível.</p>";
+      alert(
+        "Não foi possível acessar os contatos. Suporte ou permissões insuficientes."
+      );
     }
   });
 
-  // Verificar e requisitar permissões (se necessário na inicialização):
-  if (!("contacts" in navigator)) {
-    alert("Este navegador não suporta o acesso a contatos.");
-  } else if (Notification.permission !== "granted") {
-    Notification.requestPermission();
-  }
+  // Carregar contatos ao inicializar a página
+  loadContacts();
+
+  // // Verificar e requisitar permissões (se necessário na inicialização):
+  // if (!("contacts" in navigator)) {
+  //   alert("Este navegador não suporta o acesso a contatos.");
+  // } else if (Notification.permission !== "granted") {
+  //   Notification.requestPermission();
+  // }
 });

@@ -5,33 +5,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PWA com Funcionalidades Nativas</title>
-    <link rel="stylesheet" href="style.css">
+    <!-- Importa Tailwind CSS e DaisyUI via CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@1.14.0/dist/full.css" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
 </head>
 
 <body>
-    <h1>Exemplo de PWA</h1>
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold text-center mb-6">Exemplo de PWA</h1>
 
-    <button id="unlock-button">Desbloquear para Ver Conteúdo</button>
+        <div class="card shadow-lg compact bg-base-100 p-6">
+            <h2 class="text-2xl font-semibold mb-4">Conteúdo Protegido</h2>
+            <p class="mb-4">Você desbloqueou este conteúdo com sucesso!</p>
 
-    <div id="protected-content">
-        <h2>Conteúdo Protegido</h2>
-        <p>Você desbloqueou este conteúdo com sucesso!</p>
+            <div class="mb-4">
+                <button id="geo-button" class="btn btn-primary w-full">Obter Geolocalização</button>
+                <p id="geo-location" class="mt-2 text-center">Localização: Não disponível</p>
+            </div>
 
-        <div>
-            <button id="geo-button">Obter Geolocalização</button>
-            <p id="geo-location">Localização: Não disponível</p>
+            <div class="mb-4">
+                <button id="direction-button" class="btn btn-primary w-full">Obter Direção</button>
+                <p id="direction" class="mt-2 text-center">Direção: Não disponível</p>
+            </div>
         </div>
-
-        <div>
-            <button id="direction-button">Obter Direção</button>
-            <p id="direction">Direção: Não disponível</p>
-        </div>
-
     </div>
 
     <script src="main.js"></script>
     <script src="service-worker.js"></script>
 </body>
+
 
 </html>

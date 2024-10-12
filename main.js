@@ -5,19 +5,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const direction = document.getElementById("direction");
 
   const themeToggle = document.getElementById("theme-toggle");
-  const body = document.body;
+  const htmlElement = document.documentElement; // Correção: Obtém o elemento <html> diretamente
 
   // Função para trocar de tema
   function toggleTheme() {
-    const currentTheme = body.getAttribute("data-theme");
-    const newTheme = currentTheme === "dark" ? "light" : "dark";
-    body.setAttribute("data-theme", newTheme);
-    localStorage.setItem("theme", newTheme);
+    const currentTheme = htmlElement.getAttribute("data-bs-theme");
+    const newTheme = currentTheme === "light" ? "dark" : "light";
+    htmlElement.setAttribute("data-bs-theme", newTheme);
+    localStorage.setItem("theme", newTheme); // Mantém a chave do localStorage consistente
   }
 
   // Carregar tema salvo no localStorage
-  const savedTheme = localStorage.getItem("theme") || "light"; // padrão para 'light'
-  body.setAttribute("data-theme", savedTheme);
+  const savedTheme = localStorage.getItem("theme") || "dark"; // Padrão para 'dark'
+  htmlElement.setAttribute("data-bs-theme", savedTheme); // Aplica o tema no elemento <html>
 
   // Lidar com o clique no botão de toggle de temas
   themeToggle.addEventListener("click", toggleTheme);

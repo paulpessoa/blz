@@ -127,7 +127,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       if ("contacts" in navigator && "ContactsManager" in window) {
-        const props = ["name", "tel"]; // Propriedades desejadas
+        // Incluir 'icon' nas propriedades desejadas
+        const props = ["name", "tel", "icon"]; // Propriedades desejadas
 
         // Opções para seleção
         const opts = { multiple: false };
@@ -137,10 +138,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (contacts.length > 0) {
           const contact = contacts[0];
-          contactInfo.innerHTML = `
-                      <p><strong>Nome:</strong> ${contact.name}</p>
-                      <p><strong>Telefone:</strong> ${contact.tel}</p>
-                  `;
+          const contactImageHtml =
+            contact.icon && contact.icon.length > 0
+              ? `<img src="${URL.createObjectURL(
+                  contact.icon[0]
+                )}" alt="Imagem do contato" style="width:100px; height:auto;">`
+              : "<p>Sem foto.</p>";
+
+          contactInfo.innerHTML = ` 
+                          <p><strong>Nome:</strong> ${contact.name}</p> 
+                          <p><strong>Telefone:</strong> ${contact.tel}</p> 
+                          ${contactImageHtml}
+                      `;
         } else {
           contactInfo.innerHTML = "<p>Nenhum contato selecionado.</p>";
         }

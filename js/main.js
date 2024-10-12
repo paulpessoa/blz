@@ -8,14 +8,19 @@ const directionButton = document.getElementById("direction-button");
 const direction = document.getElementById("direction");
 const torchButton = document.getElementById("torch-button");
 const torchStatus = document.getElementById("torchStatus");
+const shakeMessage = document.getElementById("shake-message");
 
 let track = null;
 
 // Mock de autenticação com WebAuthn
 if (window.PublicKeyCredential || true) {
+  // Adiciona "ou true" para forçar o mock
   unlockButton.addEventListener("click", async () => {
     try {
+      // Função mock para simular a autenticação
       const credential = await mockWebAuthn();
+
+      // Sucesso: exibe o conteúdo protegido
       protectedContent.style.display = "block";
       alert("Autenticação bem-sucedida (simulada)!");
     } catch (err) {
@@ -28,11 +33,14 @@ if (window.PublicKeyCredential || true) {
   });
 }
 
-// Função mock para simular a autenticação
+// Função mock para simular a resposta do WebAuthn
 function mockWebAuthn() {
   return new Promise((resolve, reject) => {
+    // Simula um pequeno atraso para representar a autenticação
     setTimeout(() => {
-      const success = true;
+      // Simulando sucesso
+      const success = true; // Troque para false para simular erro
+
       if (success) {
         resolve({
           id: "mocked-credential-id",
@@ -42,7 +50,7 @@ function mockWebAuthn() {
       } else {
         reject(new Error("Mock de falha na autenticação."));
       }
-    }, 1000);
+    }, 1000); // Simulando um atraso de 1 segundo
   });
 }
 
@@ -148,3 +156,57 @@ function toggleTorch(state) {
       alert("Erro ao controlar a lanterna: " + error.message);
     });
 }
+
+// Função para detectar chacoalhar
+let shakeEvent = null;
+if (window.DeviceMotionEvent) {
+  let lastX = null;
+  let lastY = null;
+  let lastZ = null;
+  let threshold = 15; // Sensibilidade do chacoalhar
+
+  window.addEventListener("devicemotion", (event) => {
+    const acceleration = event.acceleration;
+    if (
+      acceleration.x !== null &&
+      acceleration.y !== null &&
+      acceleration.z !== null
+    ) {
+      if (lastX !== null && lastY !== null && lastZ !== null) {
+        let deltaX = Math.abs(acceleration.x - lastX);
+        let deltaY = Math.abs(acceleration.y - lastY);
+        let deltaZ = Math.abs(acceleration.z - lastZ);
+
+        if (
+          (deltaX > threshold && deltaY > threshold) ||
+          (deltaX > threshold && deltaZ > threshold)
+        ) {
+          showShakeNotification();
+        }
+      }
+      lastX = acceleration.x;
+      lastY = acceleration.y;
+      lastZ = acceleration.z;
+    }
+  });
+}
+
+// Exibe notificação ao chacoalhar
+function showShakeNotification() {
+  if (Notification.permission === "granted") {
+    new Notification("Você chacoalhou o dispositivo!");
+  } else if (Notification.permission !== "denied") {
+    Notification.requestPermission().then((permission) => {
+      if (permission === "granted") {
+        new Notification("Você chacoalhou o dispositivo!");
+      }
+    });
+  }
+}
+
+// Solicitar permissão para notificação ao carregar a página
+document.addEventListener("DOMContentLoaded", () => {
+  if (Notification.permission !== "granted") {
+    Notification.requestPermission();
+  }
+});

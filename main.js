@@ -3,6 +3,17 @@ document.addEventListener("DOMContentLoaded", () => {
     Notification.requestPermission();
   }
 
+  if (!("contacts" in navigator)) {
+    alert("Este navegador não suporta o acesso a contatos.");
+  } else if (Notification.permission !== "granted") {
+    Notification.requestPermission();
+  }
+
+  // Exibe os contatos armazenados ao carregar a página.
+  document.addEventListener("DOMContentLoaded", () => {
+    displayContacts(JSON.parse(localStorage.getItem("savedContacts") || "[]"));
+  });
+
   const geoButton = document.getElementById("geo-button");
   const geoLocation = document.getElementById("geo-location");
   const directionButton = document.getElementById("direction-button");
@@ -117,60 +128,32 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // contactButton.addEventListener("click", async () => {
-  //   // Verificar e requisitar permissões (se necessário na inicialização):
-  //   if (!("contacts" in navigator)) {
-  //     alert("Este navegador não suporta o acesso a contatos.");
-  //   } else if (Notification.permission !== "granted") {
-  //     Notification.requestPermission();
-  //   }
+  function saveContactsToLocalStorage(contacts) {
+    const contactsToSave = contacts.map((contact) => ({
+      name: contact.name ? contact.name[0] : "",
+      tel: contact.tel ? contact.tel[0] : "",
+    }));
+    localStorage.setItem("savedContacts", JSON.stringify(contactsToSave));
+  }
 
-  //   try {
-  //     if ("contacts" in navigator && "ContactsManager" in window) {
-  //       // Incluir 'icon' nas propriedades desejadas
-  //       const props = ["name", "tel", "icon"]; // Propriedades desejadas
-
-  //       // Opções para seleção
-  //       const opts = { multiple: false };
-
-  //       // Tentativa de seleção de contatos
-  //       const contacts = await navigator.contacts.select(props, opts);
-
-  //       if (contacts.length > 0) {
-  //         const contact = contacts[0];
-  //         const contactImageHtml =
-  //           contact.icon && contact.icon.length > 0
-  //             ? `<img src="${URL.createObjectURL(
-  //                 contact.icon[0]
-  //               )}" alt="Imagem do contato" style="width:100px; height:auto;">`
-  //             : "<p>Sem foto.</p>";
-
-  //         contactInfo.innerHTML = `
-  //                         <p><strong>Nome:</strong> ${contact.name}</p>
-  //                         <p><strong>Telefone:</strong> ${contact.tel}</p>
-  //                         ${contactImageHtml}
-  //                     `;
-  //       } else {
-  //         contactInfo.innerHTML = "<p>Nenhum contato selecionado.</p>";
-  //       }
-  //     } else {
-  //       alert("A API de contatos não é suportada neste navegador.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Erro ao acessar contatos: ", error);
-  //     // Mensagem de erro para o usuário
-  //     contactInfo.innerHTML =
-  //       "<p>Não foi possível acessar os contatos. Permissões necessárias ou suporte indisponível.</p>";
-  //   }
-  // });
+  function displayContacts(contacts) {
+    if (contacts.length > 0) {
+      contactInfo.innerHTML = contacts
+        .map(
+          (contact, index) =>
+            `
+           <div class="contact-entry" data-index="${index}">
+            <p><strong>${contact.name}</strong> - ${contact.tel}</p>
+          </div>
+        `
+        )
+        .join("");
+    } else {
+      contactInfo.innerHTML = "<p>Nenhum contato selecionado.</p>";
+    }
+  }
 
   contactButton.addEventListener("click", () => {
-    if (!("contacts" in navigator)) {
-      alert("Este navegador não suporta o acesso a contatos.");
-    } else if (Notification.permission !== "granted") {
-      Notification.requestPermission();
-    }
-
     try {
       if ("contacts" in navigator && "ContactsManager" in window) {
         const props = ["name", "tel"];
@@ -188,65 +171,5 @@ document.addEventListener("DOMContentLoaded", () => {
       contactInfo.innerHTML =
         "<p>Não foi possível acessar os contatos. Permissões necessárias ou suporte indisponível.</p>";
     }
-  });
-
-  function displayContacts(contacts) {
-    if (contacts.length > 0) {
-      contactInfo.innerHTML = contacts
-        .map(
-          (contact, index) =>
-            `
-          <div class="contact-entry" data-index="${index}">
-            <p><strong>Nome:</strong> ${contact.name}</p>
-            <p><strong>Telefone:</strong> ${contact.tel}</p>
-            <button onclick="removeContact(${index})">Remover</button>
-          </div>
-        `
-        )
-        .join("");
-    } else {
-      contactInfo.innerHTML = "<p>Nenhum contato selecionado.</p>";
-    }
-  }
-
-  function removeContact(index) {
-    const savedContacts = JSON.parse(localStorage.getItem("savedContacts"));
-    if (savedContacts && savedContacts.length > index) {
-      savedContacts.splice(index, 1);
-      localStorage.setItem("savedContacts", JSON.stringify(savedContacts));
-      displayContacts(savedContacts);
-    }
-  }
-
-  function saveContactsToLocalStorage(contacts) {
-    const contactsToSave = contacts.map((contact) => ({
-      name: contact.name ? contact.name[0] : "",
-      tel: contact.tel ? contact.tel[0] : "",
-    }));
-    localStorage.setItem("savedContacts", JSON.stringify(contactsToSave));
-  }
-
-  function displayContacts(contacts) {
-    if (contacts.length > 0) {
-      contactInfo.innerHTML = contacts
-        .map(
-          (contact, index) =>
-            `
-          <div class="contact-entry" data-index="${index}">
-            <p><strong>Nome:</strong> ${contact.name}</p>
-            <p><strong>Telefone:</strong> ${contact.tel}</p>
-            <button onclick="removeContact(${index})">Remover</button>
-          </div>
-          `
-        )
-        .join("");
-    } else {
-      contactInfo.innerHTML = "<p>Nenhum contato selecionado.</p>";
-    }
-  }
-
-  // Exibe os contatos armazenados ao carregar a página.
-  document.addEventListener("DOMContentLoaded", () => {
-    displayContacts(JSON.parse(localStorage.getItem("savedContacts") || "[]"));
   });
 });

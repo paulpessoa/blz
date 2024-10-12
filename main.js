@@ -1,3 +1,15 @@
+window.onload = () => {
+  const consent = localStorage.getItem("cookieConsent");
+  if (!consent) {
+    document.getElementById("cookieConsentContainer").style.display = "block";
+  }
+
+  document.getElementById("acceptCookieConsent").onclick = () => {
+    localStorage.setItem("cookieConsent", "accepted");
+    document.getElementById("cookieConsentContainer").style.display = "none";
+  };
+};
+
 document.addEventListener("DOMContentLoaded", () => {
   if (Notification.permission !== "granted") {
     Notification.requestPermission();

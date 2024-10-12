@@ -193,20 +193,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  async function saveContactsToLocalStorage(contacts) {
-    const contactsToSave = await Promise.all(
-      contacts.map(async (contact) => {
-        const icon =
-          contact.icon && contact.icon.length > 0
-            ? await blobToBase64(contact.icon[0])
-            : null;
-        return {
-          name: contact.name ? contact.name[0] : "",
-          tel: contact.tel ? contact.tel[0] : "",
-          icon: icon,
-        };
-      })
-    );
+  function saveContactsToLocalStorage(contacts) {
+    const contactsToSave = contacts.map(async (contact) => {
+      return {
+        name: contact.name ? contact.name[0] : "",
+        tel: contact.tel ? contact.tel[0] : "",
+      };
+    });
     localStorage.setItem("savedContacts", JSON.stringify(contactsToSave));
   }
 
@@ -214,16 +207,18 @@ document.addEventListener("DOMContentLoaded", () => {
     if (contacts.length > 0) {
       contactInfo.innerHTML = contacts
         .map(
-          (contact) =>
+          (contact, index) =>
             `
-          <p><strong>Nome:</strong> ${
-            contact.name
-          } - <strong>Telefone:</strong> ${contact.tel}</p>
-           ${
-             contact.icon
-               ? `<img src="${contact.icon}" style="width:100px; height:auto;">`
-               : "<p>Sem foto.</p>"
-           }
+          <div class="contact-entry" data-index="${index}">
+            <p><strong>Nome:</strong> ${contact.name}</p>
+            <p><strong>Telefone:</strong> ${contact.tel}</p>
+            ${
+              contact.icon
+                ? `<img src="${contact.icon}" style="width:100px; height:auto;">`
+                : "<p>Sem foto.</p>"
+            }
+            <button onclick="removeContact(${index})">Remover</button>
+          </div>
         `
         )
         .join("");

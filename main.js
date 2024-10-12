@@ -193,12 +193,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  function saveContactsToLocalStorage(contacts) {
-    const contactsToSave = contacts.map((contact) => ({
-      name: contact.name ? contact.name[0] : "",
-      tel: contact.tel ? contact.tel[0] : "",
-      // Você não pode salvar objetos Blob diretamente, então ícones não são salvos
-    }));
+  async function saveContactsToLocalStorage(contacts) {
+    const contactsToSave = await Promise.all(
+      contacts.map(async (contact) => {
+        const icon =
+          contact.icon && contact.icon.length > 0
+            ? await blobToBase64(contact.icon[0])
+            : null;
+        return {
+          name: contact.name ? contact.name[0] : "",
+          tel: contact.tel ? contact.tel[0] : "",
+          icon: icon,
+        };
+      })
+    );
     localStorage.setItem("savedContacts", JSON.stringify(contactsToSave));
   }
 
@@ -208,7 +216,14 @@ document.addEventListener("DOMContentLoaded", () => {
         .map(
           (contact) =>
             `
-          <p><strong>Nome:</strong> ${contact.name} - <strong>Telefone:</strong> ${contact.tel}</p>
+          <p><strong>Nome:</strong> ${
+            contact.name
+          } - <strong>Telefone:</strong> ${contact.tel}</p>
+           ${
+             contact.icon
+               ? `<img src="${contact.icon}" style="width:100px; height:auto;">`
+               : "<p>Sem foto.</p>"
+           }
         `
         )
         .join("");

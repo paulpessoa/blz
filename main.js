@@ -231,4 +231,6 @@ document.addEventListener("DOMContentLoaded", () => {
       contactInfo.innerHTML = "<p>Nenhum contato selecionado.</p>";
     }
   }
+
+  displayContacts(JSON.parse(localStorage.getItem("savedContacts") || "[]"));
 });

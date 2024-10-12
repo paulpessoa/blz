@@ -20,11 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
     Notification.requestPermission();
   }
 
-  // Exibe os contatos armazenados ao carregar a página.
-  document.addEventListener("DOMContentLoaded", () => {
-    displayContacts(JSON.parse(localStorage.getItem("savedContacts") || "[]"));
-  });
-
   const geoButton = document.getElementById("geo-button");
   const geoLocation = document.getElementById("geo-location");
   const directionButton = document.getElementById("direction-button");
@@ -151,19 +146,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function saveContactsToCookie(contacts) {
-    const contactsToSave = contacts.map((contact) => ({
-      name: contact.name ? contact.name[0] : "",
-      tel: contact.tel ? contact.tel[0] : "",
-    }));
-    const contactsString = JSON.stringify(contactsToSave);
-    document.cookie =
-      "savedContacts=" +
-      encodeURIComponent(contactsString) +
-      "; path=/; expires=" +
-      new Date(new Date().getTime() + 86400000).toUTCString(); // Cookie válido por 1 dia
-  }
-
   function displayContacts(contacts) {
     if (contacts.length > 0) {
       contactInfo.innerHTML = contacts
@@ -187,7 +169,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const opts = { multiple: true };
 
       navigator.contacts.select(props, opts).then((contacts) => {
-        saveContactsToCookie(contacts);
         displayContacts(contacts);
       });
     } else {

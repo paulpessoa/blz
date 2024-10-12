@@ -235,14 +235,9 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="contact-entry" data-index="${index}">
             <p><strong>Nome:</strong> ${contact.name}</p>
             <p><strong>Telefone:</strong> ${contact.tel}</p>
-            ${
-              contact.icon
-                ? `<img src="${contact.icon}" style="width:100px; height:auto;">`
-                : "<p>Sem foto.</p>"
-            }
             <button onclick="removeContact(${index})">Remover</button>
           </div>
-        `
+          `
         )
         .join("");
     } else {
@@ -250,5 +245,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  displayContacts(JSON.parse(localStorage.getItem("savedContacts") || "[]"));
+  // Exibe os contatos armazenados ao carregar a página.
+  document.addEventListener("DOMContentLoaded", () => {
+    displayContacts(JSON.parse(localStorage.getItem("savedContacts") || "[]"));
+  });
 });

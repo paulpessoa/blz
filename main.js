@@ -127,22 +127,25 @@ document.addEventListener("DOMContentLoaded", () => {
       new Notification(title, { body });
     }
   }
-
-  function saveContactsToLocalStorage(contacts) {
+  function saveContactsToCookie(contacts) {
     const contactsToSave = contacts.map((contact) => ({
       name: contact.name ? contact.name[0] : "",
       tel: contact.tel ? contact.tel[0] : "",
     }));
-    localStorage.setItem("savedContacts", JSON.stringify(contactsToSave));
+    const contactsString = JSON.stringify(contactsToSave);
+    document.cookie =
+      "savedContacts=" +
+      encodeURIComponent(contactsString) +
+      "; path=/; expires=" +
+      new Date(new Date().getTime() + 86400000).toUTCString(); // Cookie válido por 1 dia
   }
 
   function displayContacts(contacts) {
     if (contacts.length > 0) {
       contactInfo.innerHTML = contacts
         .map(
-          (contact, index) =>
-            `
-           <div class="contact-entry" data-index="${index}">
+          (contact, index) => `
+          <div class="contact-entry" data-index="${index}">
             <p><strong>${contact.name}</strong> - ${contact.tel}</p>
           </div>
         `
@@ -154,22 +157,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   contactButton.addEventListener("click", () => {
-    try {
-      if ("contacts" in navigator && "ContactsManager" in window) {
-        const props = ["name", "tel"];
-        const opts = { multiple: true };
+    if ("contacts" in navigator && "ContactsManager" in window) {
+      const props = ["name", "tel"];
+      const opts = { multiple: true };
 
-        navigator.contacts.select(props, opts).then((contacts) => {
-          saveContactsToLocalStorage(contacts);
-          displayContacts(contacts);
-        });
-      } else {
-        alert("A API de contatos não é suportada neste navegador.");
-      }
-    } catch (error) {
-      console.error("Erro ao acessar contatos: ", error);
-      contactInfo.innerHTML =
-        "<p>Não foi possível acessar os contatos. Permissões necessárias ou suporte indisponível.</p>";
+      navigator.contacts.select(props, opts).then((contacts) => {
+        saveContactsToCookie(contacts);
+        displayContacts(contacts);
+      });
+    } else {
+      alert("A API de contatos não é suportada neste navegador.");
     }
   });
 });

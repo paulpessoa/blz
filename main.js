@@ -208,8 +208,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .map(
           (contact) =>
             `
-          <p><strong>Nome:</strong> ${contact.name}</p>
-          <p><strong>Telefone:</strong> ${contact.tel}</p>
+          <p><strong>Nome:</strong> ${contact.name} - <strong>Telefone:</strong> ${contact.tel}</p>
         `
         )
         .join("");

@@ -161,4 +161,34 @@ document.addEventListener("DOMContentLoaded", () => {
   // } else if (Notification.permission !== "granted") {
   //   Notification.requestPermission();
   // }
+
+  const installButton = document.getElementById("install-button");
+  let deferredPrompt;
+
+  window.addEventListener("beforeinstallprompt", (e) => {
+    // Impedir que o navegador mostre o prompt imediatamente
+    e.preventDefault();
+    // Guardar o evento para mais tarde
+    deferredPrompt = e;
+
+    // Mostrar o botão de instalação
+    installButton.style.display = "block";
+  });
+
+  installButton.addEventListener("click", async () => {
+    if (deferredPrompt) {
+      // Mostrar o prompt de instalação
+      deferredPrompt.prompt();
+
+      // Aguardar a resposta do usuário ao prompt
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`Instalação do aplicativo: ${outcome}`);
+
+      // Redefinir o deferredPrompt, pois só pode ser usado uma vez
+      deferredPrompt = null;
+
+      // Ocultar o botão de instalação após uso
+      installButton.style.display = "none";
+    }
+  });
 });

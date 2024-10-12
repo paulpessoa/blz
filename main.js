@@ -1,4 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
+  if (Notification.permission !== "granted") {
+    Notification.requestPermission();
+  }
+  
   const geoButton = document.getElementById("geo-button");
   const geoLocation = document.getElementById("geo-location");
   const directionButton = document.getElementById("direction-button");
@@ -87,4 +91,26 @@ document.addEventListener("DOMContentLoaded", () => {
       direction.textContent = "O sensor de orientação não é suportado.";
     }
   });
+
+  // Monitorar mudanças na rede
+  function updateConnectionStatus() {
+    if (navigator.onLine) {
+      showNotification("Conexão estabelecida", "Você está online novamente.");
+    } else {
+      showNotification(
+        "Sem conexão",
+        "Você está offline. Verifique sua conexão de rede."
+      );
+    }
+  }
+
+  window.addEventListener("online", updateConnectionStatus);
+  window.addEventListener("offline", updateConnectionStatus);
+
+  // Exibir notificação
+  function showNotification(title, body) {
+    if (Notification.permission === "granted") {
+      new Notification(title, { body });
+    }
+  }
 });

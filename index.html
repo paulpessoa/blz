@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple PWA</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+
+<body>
+    <h1>Simple PWA with Unlock Feature</h1>
+
+    <!-- Botão para desbloquear conteúdo -->
+    <button id="unlock-button">Desbloquear Conteúdo</button>
+
+    <!-- Conteúdo protegido (desbloqueado com autenticação) -->
+    <div id="protected-content" style="display: none;">
+        <h2>Informações de Localização</h2>
+        <div id="geo-info">GeoLocalização: <span id="location">Aguardando...</span></div>
+        <div id="speed">Velocidade: <span id="speed-value">0</span> m/s</div>
+        <div id="direction">Direção: <span id="direction-value">Aguardando...</span></div>
+    </div>
+
+    <!-- Botão para ligar/desligar a lanterna -->
+    <button id="toggle-torch">Ligar Lanterna</button>
+    <div id="torch-status"></div>
+
+    <script src="js/main.js"></script>
+</body>
+
+</html>

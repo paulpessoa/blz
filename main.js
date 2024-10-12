@@ -8,6 +8,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const directionButton = document.getElementById("direction-button");
   const direction = document.getElementById("direction");
 
+  const contactButton = document.getElementById("add-contact");
+  const contactInfo = document.getElementById("contact-info");
+
   const themeToggle = document.getElementById("theme-toggle");
   const htmlElement = document.documentElement; // Correção: Obtém o elemento <html> diretamente
 
@@ -114,16 +117,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  const contactButton = document.getElementById("add-contact");
-  const contactInfo = document.getElementById("contact-info");
-
   contactButton.addEventListener("click", async () => {
     try {
       if ("contacts" in navigator && "ContactsManager" in window) {
-        const props = ["name", "tel"]; // Quais propriedades queremos
-        const opts = { multiple: false }; // Escolher apenas um contato
+        const props = ["name", "tel"]; // Propriedades desejadas
 
+        // Opções para seleção
+        const opts = { multiple: false };
+
+        // Tentativa de seleção de contatos
         const contacts = await navigator.contacts.select(props, opts);
+
         if (contacts.length > 0) {
           const contact = contacts[0];
           contactInfo.innerHTML = `
@@ -138,6 +142,16 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     } catch (error) {
       console.error("Erro ao acessar contatos: ", error);
+      // Mensagem de erro para o usuário
+      contactInfo.innerHTML =
+        "<p>Não foi possível acessar os contatos. Permissões necessárias ou suporte indisponível.</p>";
     }
   });
+
+  // Verificar e requisitar permissões (se necessário na inicialização):
+  if (!("contacts" in navigator)) {
+    alert("Este navegador não suporta o acesso a contatos.");
+  } else if (Notification.permission !== "granted") {
+    Notification.requestPermission();
+  }
 });

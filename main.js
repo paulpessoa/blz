@@ -45,7 +45,6 @@ document.addEventListener("DOMContentLoaded", () => {
       geoLocation.textContent = "Geolocalização não é suportada.";
   }
 });
-});
 
   speedButton.addEventListener("click", () => {
     if (navigator.geolocation) {

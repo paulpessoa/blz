@@ -1,20 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const unlockButton = document.getElementById("unlock-button");
-  const protectedContent = document.getElementById("protected-content");
   const geoButton = document.getElementById("geo-button");
   const geoLocation = document.getElementById("geo-location");
   const directionButton = document.getElementById("direction-button");
   const direction = document.getElementById("direction");
-
-  unlockButton.addEventListener("click", () => {
-    const password = prompt("Digite a senha para desbloquear:");
-    if (password === "1234") {
-      protectedContent.style.display = "block";
-      alert("Conteúdo desbloqueado!");
-    } else {
-      alert("Senha incorreta!");
-    }
-  });
 
   geoButton.addEventListener("click", () => {
     if (navigator.geolocation) {
@@ -44,7 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
       geoLocation.textContent = "Geolocalização não é suportada.";
     }
   });
-
 
   directionButton.addEventListener("click", () => {
     if (window.DeviceOrientationEvent) {
@@ -81,3 +68,4 @@ document.addEventListener("DOMContentLoaded", () => {
       direction.textContent = "O sensor de orientação não é suportado.";
     }
   });
+});

@@ -1,15 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-  window.onload = () => {
-    const consent = localStorage.getItem("cookieConsent");
-    if (!consent) {
-      document.getElementById("cookieConsentContainer").style.display = "block";
-    }
-
-    document.getElementById("acceptCookieConsent").onclick = () => {
-      localStorage.setItem("cookieConsent", "accepted");
-      document.getElementById("cookieConsentContainer").style.display = "none";
-    };
-  };
   if (Notification.permission !== "granted") {
     Notification.requestPermission();
   }
@@ -19,40 +8,46 @@ document.addEventListener("DOMContentLoaded", () => {
   } else if (Notification.permission !== "granted") {
     Notification.requestPermission();
   }
-
+  // LOCALIZACAO
   const geoButton = document.getElementById("geo-button");
   const geoLocation = document.getElementById("geo-location");
+
+  // DIRECAO
   const directionButton = document.getElementById("direction-button");
   const direction = document.getElementById("direction");
 
+  // CONTATOS
   const contactButton = document.getElementById("add-contact");
   const contactInfo = document.getElementById("contact-info");
 
+  // MUDAR TEMA
   const themeToggle = document.getElementById("theme-toggle");
-  const htmlElement = document.documentElement; // Correção: Obtém o elemento <html> diretamente
-
-  // Função para trocar de tema
+  const htmlElement = document.documentElement;
+  
+  // *********** ************** FUNCAO TROCAR TEMAS *********** **************
   function toggleTheme() {
     const currentTheme = htmlElement.getAttribute("data-bs-theme");
     const newTheme = currentTheme === "light" ? "dark" : "light";
     htmlElement.setAttribute("data-bs-theme", newTheme);
-    localStorage.setItem("theme", newTheme); // Mantém a chave do localStorage consistente
+    localStorage.setItem("theme", newTheme);
+    themeToggle.textContent = `Mudar para tema ${newTheme === "light" ? "escuro" : "claro"}`;
   }
 
   // Carregar tema salvo no localStorage
-  const savedTheme = localStorage.getItem("theme") || "dark"; // Padrão para 'dark'
-  htmlElement.setAttribute("data-bs-theme", savedTheme); // Aplica o tema no elemento <html>
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  htmlElement.setAttribute("data-bs-theme", savedTheme);
 
   // Lidar com o clique no botão de toggle de temas
   themeToggle.addEventListener("click", toggleTheme);
 
+  // *********** ************** FUNCAO LOCALIZACAO *********** **************
   geoButton.addEventListener("click", () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude, altitude } = position.coords;
 
-          let locationText = `Localização: Latitude ${latitude}, Longitude ${longitude}`;
+          let locationText = `Localização: ${latitude}, ${longitude}`;
 
           if (altitude !== null) {
             const altitudeStatus =
@@ -75,6 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // *********** ************** FUNCAO DIRECAO *********** **************
   directionButton.addEventListener("click", () => {
     if (window.DeviceOrientationEvent) {
       window.addEventListener("deviceorientation", (event) => {
@@ -112,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Monitorar mudanças na rede
+  // *********** ************** FUNCAO WIFI / 3G *********** **************
   function updateConnectionStatus() {
     if (navigator.onLine) {
       showNotification("Conexão estabelecida", "Você está online novamente.");
@@ -134,18 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function setCookieIfConsented(name, value, days) {
-    const consent = localStorage.getItem("cookieConsent");
-    if (consent === "accepted") {
-      const d = new Date();
-      d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000);
-      let expires = "expires=" + d.toUTCString();
-      document.cookie = name + "=" + value + ";" + expires + ";path=/";
-    } else {
-      console.log("Cookie consent not given");
-    }
-  }
-
+  // *********** ************** FUNCAO CONTATOS *********** **************
   function displayContacts(contacts) {
     if (contacts.length > 0) {
       contactInfo.innerHTML = contacts
@@ -161,9 +146,9 @@ document.addEventListener("DOMContentLoaded", () => {
       contactInfo.innerHTML = "<p>Nenhum contato selecionado.</p>";
     }
   }
+  displayContacts([]);
 
   contactButton.addEventListener("click", () => {
-    setCookieIfConsented("contactButtonClicked", "true", 1);
     if ("contacts" in navigator && "ContactsManager" in window) {
       const props = ["name", "tel"];
       const opts = { multiple: true };

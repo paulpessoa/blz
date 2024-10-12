@@ -7,10 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
     alert("Este navegador não suporta o acesso a contatos.");
   } else if (Notification.permission !== "granted") {
     Notification.requestPermission();
-
-    if (!navigator.contacts.length) {
-      contactInfo.innerHTML = "<p>Nenhum contato selecionado.</p>";
-    }
   }
   // LOCALIZACAO
   const geoButton = document.getElementById("geo-button");
@@ -137,6 +133,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // *********** ************** FUNCAO CONTATOS *********** **************
+  if (!navigator.contacts.length) {
+    contactInfo.innerHTML = "<p>Nenhum contato selecionado.</p>";
+  }
+
   function displayContacts(contacts) {
     if (contacts.length > 0) {
       contactInfo.innerHTML = contacts

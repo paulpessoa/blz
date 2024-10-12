@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (Notification.permission !== "granted") {
     Notification.requestPermission();
   }
-  
+
   const geoButton = document.getElementById("geo-button");
   const geoLocation = document.getElementById("geo-location");
   const directionButton = document.getElementById("direction-button");
@@ -113,4 +113,31 @@ document.addEventListener("DOMContentLoaded", () => {
       new Notification(title, { body });
     }
   }
+
+  const contactButton = document.getElementById("add-contact");
+  const contactInfo = document.getElementById("contact-info");
+
+  contactButton.addEventListener("click", async () => {
+    try {
+      if ("contacts" in navigator && "ContactsManager" in window) {
+        const props = ["name", "tel"]; // Quais propriedades queremos
+        const opts = { multiple: false }; // Escolher apenas um contato
+
+        const contacts = await navigator.contacts.select(props, opts);
+        if (contacts.length > 0) {
+          const contact = contacts[0];
+          contactInfo.innerHTML = `
+                      <p><strong>Nome:</strong> ${contact.name}</p>
+                      <p><strong>Telefone:</strong> ${contact.tel}</p>
+                  `;
+        } else {
+          contactInfo.innerHTML = "<p>Nenhum contato selecionado.</p>";
+        }
+      } else {
+        alert("A API de contatos não é suportada neste navegador.");
+      }
+    } catch (error) {
+      console.error("Erro ao acessar contatos: ", error);
+    }
+  });
 });

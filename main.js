@@ -164,25 +164,22 @@ document.addEventListener("DOMContentLoaded", () => {
   //   }
   // });
 
-  contactButton.addEventListener("click", async () => {
-    // Verificar e requisitar permissões (se necessário na inicialização):
+  contactButton.addEventListener("click", () => {
     if (!("contacts" in navigator)) {
       alert("Este navegador não suporta o acesso a contatos.");
     } else if (Notification.permission !== "granted") {
-      await Notification.requestPermission();
+      Notification.requestPermission();
     }
 
     try {
       if ("contacts" in navigator && "ContactsManager" in window) {
-        const props = ["name", "tel", "icon"]; // Propriedades desejadas
-        const opts = { multiple: true }; // Permitir selecionar múltiplos contatos
+        const props = ["name", "tel"];
+        const opts = { multiple: true };
 
-        const contacts = await navigator.contacts.select(props, opts);
-
-        // Converter e salvar os contatos no localStorage
-        saveContactsToLocalStorage(contacts);
-
-        displayContacts(contacts);
+        navigator.contacts.select(props, opts).then((contacts) => {
+          saveContactsToLocalStorage(contacts);
+          displayContacts(contacts);
+        });
       } else {
         alert("A API de contatos não é suportada neste navegador.");
       }
@@ -193,13 +190,39 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  function displayContacts(contacts) {
+    if (contacts.length > 0) {
+      contactInfo.innerHTML = contacts
+        .map(
+          (contact, index) =>
+            `
+          <div class="contact-entry" data-index="${index}">
+            <p><strong>Nome:</strong> ${contact.name}</p>
+            <p><strong>Telefone:</strong> ${contact.tel}</p>
+            <button onclick="removeContact(${index})">Remover</button>
+          </div>
+        `
+        )
+        .join("");
+    } else {
+      contactInfo.innerHTML = "<p>Nenhum contato selecionado.</p>";
+    }
+  }
+
+  function removeContact(index) {
+    const savedContacts = JSON.parse(localStorage.getItem("savedContacts"));
+    if (savedContacts && savedContacts.length > index) {
+      savedContacts.splice(index, 1);
+      localStorage.setItem("savedContacts", JSON.stringify(savedContacts));
+      displayContacts(savedContacts);
+    }
+  }
+
   function saveContactsToLocalStorage(contacts) {
-    const contactsToSave = contacts.map(async (contact) => {
-      return {
-        name: contact.name ? contact.name[0] : "",
-        tel: contact.tel ? contact.tel[0] : "",
-      };
-    });
+    const contactsToSave = contacts.map((contact) => ({
+      name: contact.name ? contact.name[0] : "",
+      tel: contact.tel ? contact.tel[0] : "",
+    }));
     localStorage.setItem("savedContacts", JSON.stringify(contactsToSave));
   }
 

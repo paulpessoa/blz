@@ -20,10 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const contactButton = document.getElementById("add-contact");
   const contactInfo = document.getElementById("contact-info");
 
-  // if (navigator.contacts.length === 0) {
-  //   contactInfo.innerHTML = "<p>Nenhum contato selecionado.</p>";
-  // }
-
   // MUDAR TEMA
   const themeToggle = document.getElementById("theme-toggle");
   const htmlElement = document.documentElement;
@@ -53,14 +49,14 @@ document.addEventListener("DOMContentLoaded", () => {
         (position) => {
           const { latitude, longitude, altitude } = position.coords;
 
-          let locationText = `Localização: ${latitude}, ${longitude}`;
+          let locationText = `<p>Localização: ${latitude}, ${longitude}</p>`;
 
           if (altitude !== null) {
             const altitudeStatus =
               altitude > 0 ? "acima do nível do mar" : "abaixo do nível do mar";
-            locationText += `, Altitude ${altitude.toFixed(
+            locationText += `<p> Altitude ${altitude.toFixed(
               2
-            )} metros (${altitudeStatus})`;
+            )} metros (${altitudeStatus})</p>`;
           } else {
             locationText += `, Altitude: Não disponível`;
           }
@@ -84,22 +80,14 @@ document.addEventListener("DOMContentLoaded", () => {
         if (alpha !== null) {
           let directionString;
 
-          if (alpha >= 337.5 || alpha < 22.5) {
+          if (alpha >= 315.1 || alpha < 45) {
             directionString = "Norte";
-          } else if (alpha >= 22.5 && alpha < 67.5) {
-            directionString = "Nordeste";
-          } else if (alpha >= 67.5 && alpha < 112.5) {
+          } else if (alpha >= 45.1 && alpha < 135) {
             directionString = "Leste";
-          } else if (alpha >= 112.5 && alpha < 157.5) {
-            directionString = "Sudeste";
-          } else if (alpha >= 157.5 && alpha < 202.5) {
+          } else if (alpha >= 135.1 && alpha < 225) {
             directionString = "Sul";
-          } else if (alpha >= 202.5 && alpha < 247.5) {
-            directionString = "Sudoeste";
-          } else if (alpha >= 247.5 && alpha < 292.5) {
+          } else if (alpha >= 225.1 && alpha < 315) {
             directionString = "Oeste";
-          } else if (alpha >= 292.5 && alpha < 337.5) {
-            directionString = "Noroeste";
           }
 
           direction.textContent = `Direção: ${directionString} - ${Math.round(

@@ -7,6 +7,10 @@ document.addEventListener("DOMContentLoaded", () => {
     alert("Este navegador não suporta o acesso a contatos.");
   } else if (Notification.permission !== "granted") {
     Notification.requestPermission();
+
+    if (!navigator.contacts.length) {
+      contactInfo.innerHTML = "<p>Nenhum contato selecionado.</p>";
+    }
   }
   // LOCALIZACAO
   const geoButton = document.getElementById("geo-button");
@@ -23,14 +27,16 @@ document.addEventListener("DOMContentLoaded", () => {
   // MUDAR TEMA
   const themeToggle = document.getElementById("theme-toggle");
   const htmlElement = document.documentElement;
-  
+
   // *********** ************** FUNCAO TROCAR TEMAS *********** **************
   function toggleTheme() {
     const currentTheme = htmlElement.getAttribute("data-bs-theme");
     const newTheme = currentTheme === "light" ? "dark" : "light";
     htmlElement.setAttribute("data-bs-theme", newTheme);
     localStorage.setItem("theme", newTheme);
-    themeToggle.textContent = `Mudar para tema ${newTheme === "light" ? "escuro" : "claro"}`;
+    themeToggle.textContent = `Mudar para tema ${
+      newTheme === "light" ? "escuro" : "claro"
+    }`;
   }
 
   // Carregar tema salvo no localStorage
@@ -146,7 +152,6 @@ document.addEventListener("DOMContentLoaded", () => {
       contactInfo.innerHTML = "<p>Nenhum contato selecionado.</p>";
     }
   }
-  displayContacts([]);
 
   contactButton.addEventListener("click", () => {
     if ("contacts" in navigator && "ContactsManager" in window) {

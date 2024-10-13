@@ -22,3 +22,4 @@
 ## Tecnologias Utilizadas
 
 [Liste as tecnologias utilizadas no projeto, como linguagens de programação, frameworks, bibliotecas, etc.]
+

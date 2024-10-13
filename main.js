@@ -42,6 +42,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Lidar com o clique no botão de toggle de temas
   themeToggle.addEventListener("click", toggleTheme);
 
+
+
+
   // *********** ************** FUNCAO LOCALIZACAO *********** **************
   geoButton.addEventListener("click", () => {
     if (navigator.geolocation) {
@@ -71,6 +74,8 @@ document.addEventListener("DOMContentLoaded", () => {
       geoLocation.textContent = "Geolocalização não é suportada.";
     }
   });
+
+
 
   // *********** ************** FUNCAO DIRECAO *********** **************
   directionButton.addEventListener("click", () => {
@@ -102,6 +107,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+
+  // Exibir notificação
+  function showNotification(title, body) {
+    if (Notification.permission === "granted") {
+      new Notification(title, { body });
+    }
+  }
+
+
   // *********** ************** FUNCAO WIFI / 3G *********** **************
   function updateConnectionStatus() {
     if (navigator.onLine) {
@@ -117,15 +131,8 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("online", updateConnectionStatus);
   window.addEventListener("offline", updateConnectionStatus);
 
-  // Exibir notificação
-  function showNotification(title, body) {
-    if (Notification.permission === "granted") {
-      new Notification(title, { body });
-    }
-  }
 
   // *********** ************** FUNCAO CONTATOS *********** **************
-
   function displayContacts(contacts) {
     if (contacts.length > 0) {
       contactInfo.innerHTML = contacts

@@ -1,3 +1,25 @@
+// Exibir notificação
+function showNotification(title, body) {
+  if (Notification.permission === "granted") {
+    new Notification(title, { body });
+  }
+}
+
+// *********** ************** FUNCAO WIFI / 3G *********** **************
+function updateConnectionStatus() {
+  if (navigator.onLine) {
+    showNotification("Conexão estabelecida", "Você está online novamente.");
+  } else {
+    showNotification(
+      "Sem conexão",
+      "Você está offline. Verifique sua conexão de rede."
+    );
+  }
+}
+
+window.addEventListener("online", updateConnectionStatus);
+window.addEventListener("offline", updateConnectionStatus);
+
 document.addEventListener("DOMContentLoaded", () => {
   if (Notification.permission !== "granted") {
     Notification.requestPermission();
@@ -42,9 +64,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // Lidar com o clique no botão de toggle de temas
   themeToggle.addEventListener("click", toggleTheme);
 
-
-
-
   // *********** ************** FUNCAO LOCALIZACAO *********** **************
   geoButton.addEventListener("click", () => {
     if (navigator.geolocation) {
@@ -75,8 +94,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-
-
   // *********** ************** FUNCAO DIRECAO *********** **************
   directionButton.addEventListener("click", () => {
     if (window.DeviceOrientationEvent) {
@@ -106,31 +123,6 @@ document.addEventListener("DOMContentLoaded", () => {
       direction.textContent = "O sensor de orientação não é suportado.";
     }
   });
-
-
-  // Exibir notificação
-  function showNotification(title, body) {
-    if (Notification.permission === "granted") {
-      new Notification(title, { body });
-    }
-  }
-
-
-  // *********** ************** FUNCAO WIFI / 3G *********** **************
-  function updateConnectionStatus() {
-    if (navigator.onLine) {
-      showNotification("Conexão estabelecida", "Você está online novamente.");
-    } else {
-      showNotification(
-        "Sem conexão",
-        "Você está offline. Verifique sua conexão de rede."
-      );
-    }
-  }
-
-  window.addEventListener("online", updateConnectionStatus);
-  window.addEventListener("offline", updateConnectionStatus);
-
 
   // *********** ************** FUNCAO CONTATOS *********** **************
   function displayContacts(contacts) {
